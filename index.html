@@ -27,17 +27,21 @@
       shadow="type: pcfsoft"
       xr-mode-ui="XRMode: xr"
     >
+    
       <a-assets>
-        <a-asset-item id="tree-model" src="https://cdn.aframe.io/examples/ar/models/tree.glb"></a-asset-item>
+        <a-asset-item id="tree-model" src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb"></a-asset-item>
+        
         <a-asset-item id="snowman-model" src="snowman_psx.glb"></a-asset-item>
       </a-assets>
 
-      <a-entity id="objects" scale="0.1 0.1 0.1" position="0 0 -1" shadow>
-        <a-box position="0 0.5 0" radius="0.5" color="#4CC3D9"></a-box>
-
-        <a-entity gltf-model="#tree-model" position="1 0 0" scale="0.01 0.01 0.01"></a-entity>
+      <a-entity id="objects" scale="0.2 0.2 0.2" position="0 0 -1" shadow>
         
-        <a-entity gltf-model="#snowman-model" position="-1 0 0" scale="0.01 0.01 0.01"></a-entity>
+        <a-entity gltf-model="#tree-model" position="1 0 0" scale="1 1 1"></a-entity>
+        
+        <a-entity gltf-model="#snowman-model" position="-1 0 0" scale="1 1 1"></a-entity>
+
+        <a-box position="0 0.25 0" scale="0.5 0.5 0.5" color="#4CC3D9"></a-box>
+
       </a-entity>
 
       <a-light type="directional" light="castShadow:true;" position="1 1 1" intensity="1.57" shadow-camera-automatic="#objects"></a-light>
