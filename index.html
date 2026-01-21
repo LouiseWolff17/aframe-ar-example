@@ -17,6 +17,24 @@
           }
         }
       });
+
+      AFRAME.registerComponent('spawner', {
+        init: function () {
+          this.el.addEventListener('click', () => {
+            // 1. Create a new entity
+            const newEntity = document.createElement('a-entity');
+            // 2. Set it to be a snowman
+            newEntity.setAttribute('gltf-model', '#snowman-model');
+            // 3. Match the position of the AR reticle (#objects)
+            const targetPos = document.querySelector('#objects').getAttribute('position');
+            newEntity.setAttribute('position', targetPos);
+            // 4. Match the scale you want (e.g., small)
+            newEntity.setAttribute('scale', '0.05 0.05 0.05');
+            // 5. Add to scene
+            this.el.appendChild(newEntity);
+          });
+        }
+      });
     </script>
   </head>
   <body>
@@ -35,7 +53,7 @@
       </a-assets>
 
       <a-entity id="objects" scale="0.2 0.2 0.2" position="0 0 -3" shadow>
-        <a-entity gltf-model="#tree-model" position="1 0 0" scale="0.05 0.05 0.05"></a-entity>
+        <a-entity gltf-model="#tree-model" position="1 0 0" scale="0.01 0.01 0.01"></a-entity>
         
         <a-entity gltf-model="#snowman-model" position="-1 0 0" scale="0.05 0.05 0.05"></a-entity>
       </a-entity>
