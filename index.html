@@ -35,11 +35,9 @@
       </a-assets>
 
       <a-entity id="objects" scale="0.2 0.2 0.2" position="0 0 -3" shadow>
+        <a-entity gltf-model="#tree-model" position="1 0 0" scale="0.05 0.05 0.05"></a-entity>
         
-        <a-entity gltf-model="#tree-model" position="1 0 0"></a-entity>
-        
-        <a-entity gltf-model="#snowman-model" position="-1 0 0"></a-entity>
-
+        <a-entity gltf-model="#snowman-model" position="-1 0 0" scale="0.05 0.05 0.05"></a-entity>
       </a-entity>
 
       <a-light type="directional" light="castShadow:true;" position="1 1 1" intensity="1.57" shadow-camera-automatic="#objects"></a-light>
