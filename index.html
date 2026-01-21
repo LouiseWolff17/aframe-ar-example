@@ -52,13 +52,13 @@
 
       <a-entity id="objects" position="0 0 -3">
         
-        <a-entity gltf-model="#tree-model" position="0.4 0 0" scale="0.02 0.02 0.02"></a-entity>
+        <a-entity gltf-model="#tree-model" position="0.4 0 0" scale="0.005 0.005 0.005"></a-entity>
         
         <a-entity gltf-model="#snowman-model" position="-0.4 0 0" scale="0.2 0.2 0.2"></a-entity>
       </a-entity>
 
-      <a-light type="directional" position="1 1 1" intensity="1.5"></a-light>
-      <a-camera position="0 0.4 0"></a-camera>
+      <a-light type="directional" position="1 1 1" intensity="1.57" shadow-camera-automatic="#objects"></a-light>
+      <a-camera position="0 0.4 0" wasd-controls="acceleration:10;"></a-camera>
       
       <a-plane follow-shadow="#objects" material="shader:shadow" shadow="cast:false;" rotation="-90 0 0" width="2" height="2"></a-plane>
       <a-sky color="#ECECEC" hide-on-enter-ar></a-sky>
