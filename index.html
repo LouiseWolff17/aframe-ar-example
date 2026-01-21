@@ -21,16 +21,15 @@
       AFRAME.registerComponent('spawner', {
         init: function () {
           this.el.addEventListener('click', () => {
-            // 1. Create a new entity
             const newEntity = document.createElement('a-entity');
-            // 2. Set it to be a snowman
             newEntity.setAttribute('gltf-model', '#snowman-model');
-            // 3. Match the position of the AR reticle (#objects)
+            
+            // Get position from the reticle (#objects)
             const targetPos = document.querySelector('#objects').getAttribute('position');
-            newEntity.setAttribute('position', targetPos);
-            // 4. Match the scale you want (e.g., small)
-            newEntity.setAttribute('scale', '0.05 0.05 0.05');
-            // 5. Add to scene
+            newEntity.setAttribute('position', {x: targetPos.x, y: targetPos.y, z: targetPos.z});
+            
+            // Try a very small scale first to ensure it's visible
+            newEntity.setAttribute('scale', '0.01 0.01 0.01');
             this.el.appendChild(newEntity);
           });
         }
@@ -48,18 +47,19 @@
 
       <a-assets>
         <a-asset-item id="tree-model" src="pine_tree.glb"></a-asset-item>
-        
         <a-asset-item id="snowman-model" src="pbr_snowman.glb"></a-asset-item>
       </a-assets>
 
-      <a-entity id="objects" scale="0.2 0.2 0.2" position="0 0 -3" shadow>
-        <a-entity gltf-model="#tree-model" position="1 0 0" scale="0.02 0.02 0.02"></a-entity>
+      <a-entity id="objects" position="0 0 -2">
+        <a-ring color="teal" rotation="-90 0 0" radius-inner="0.1" radius-outer="0.15"></a-ring>
         
-        <a-entity gltf-model="#snowman-model" position="-1 0 0" scale="0.05 0.05 0.05"></a-entity>
+        <a-entity gltf-model="#tree-model" position="0.4 0 0" scale="0.02 0.02 0.02"></a-entity>
+        
+        <a-entity gltf-model="#snowman-model" position="-0.4 0 0" scale="0.01 0.01 0.01"></a-entity>
       </a-entity>
 
-      <a-light type="directional" light="castShadow:true;" position="1 1 1" intensity="1.57" shadow-camera-automatic="#objects"></a-light>
-      <a-camera position="0 0.4 0" wasd-controls="acceleration:10;"></a-camera>
+      <a-light type="directional" position="1 1 1" intensity="1.5"></a-light>
+      <a-camera position="0 0.4 0"></a-camera>
       
       <a-plane follow-shadow="#objects" material="shader:shadow" shadow="cast:false;" rotation="-90 0 0" width="2" height="2"></a-plane>
       <a-sky color="#ECECEC" hide-on-enter-ar></a-sky>
