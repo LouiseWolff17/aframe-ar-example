@@ -43,7 +43,7 @@
           // Create a new entity for the snowman
           const newSnowman = document.createElement('a-entity');
           newSnowman.setAttribute('position', pos);
-          newSnowman.setAttribute('scale', '0.004 0.004 0.004'); // Matching your tree scale
+          newSnowman.setAttribute('scale', '0.2 0.2 0.2'); // Matching your tree scale
           
           // TRY TO LOAD YOUR MODEL
           newSnowman.setAttribute('gltf-model', '#snowman-model');
@@ -61,7 +61,7 @@
   </head>
   <body>
     <a-scene
-      spawner
+      ar-handler
       reflection="directionalLight: a-light[type=directional]"
       ar-hit-test="target: #objects;"
       renderer="colorManagement: true; exposure: 1; toneMapping: ACESFilmic"
