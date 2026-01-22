@@ -85,8 +85,6 @@
       ar-handler
       reflection="directionalLight: a-light[type=directional]"
       ar-hit-test="target: #objects;"
-      cursor="rayOrigin: mouse"
-      raycaster="objects: [gltf-model]"
       renderer="colorManagement: true; exposure: 1; toneMapping: ACESFilmic"
       shadow="type: pcfsoft"
       xr-mode-ui="XRMode: xr"
@@ -98,7 +96,6 @@
       </a-assets>
 
       <a-entity id="objects" position="0 0 -3">
-        
         <a-entity gltf-model="#tree-model" position="0.4 0 0" scale="0.004 0.004 0.004"></a-entity>
         <a-entity gltf-model="#snowman-model" position="-0.4 0 0" scale="0.2 0.2 0.2"></a-entity>
       </a-entity>
