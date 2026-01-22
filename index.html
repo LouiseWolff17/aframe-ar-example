@@ -18,48 +18,43 @@
         }
       });
 
-      AFRAME.registerComponent('ar-spawner', {
+      AFRAME.registerComponent('ar-handler', {
         init: function () {
-          // Listen for the select event (screen tap) specifically in AR
+          // Listen for the 'select' event which is the official "screen tap" in AR
           this.el.sceneEl.addEventListener('enter-vr', () => {
             if (this.el.sceneEl.is('ar-mode')) {
-              this.el.sceneEl.xrSession.addEventListener('select', (ev) => {
-                this.spawnEntity();
+              this.el.sceneEl.xrSession.addEventListener('select', () => {
+                this.spawn();
               });
             }
           });
 
-          // Also allow clicking on desktop for testing
+          // Fallback for desktop testing (standard click)
           window.addEventListener('click', () => {
-            if (!this.el.sceneEl.is('ar-mode')) {
-              this.spawnEntity();
-            }
+            if (!this.el.sceneEl.is('ar-mode')) { this.spawn(); }
           });
         },
 
-        spawnEntity: function () {
-          const newEntity = document.createElement('a-entity');
-          
-          // Try to use your snowman model
-          newEntity.setAttribute('gltf-model', '#snowman-model');
-          
-          // Get the position of the reticle (#objects)
+        spawn: function () {
+          const scene = this.el.sceneEl;
           const reticle = document.querySelector('#objects');
-          const position = reticle.getAttribute('position');
+          const pos = reticle.getAttribute('position');
+
+          // Create a new entity for the snowman
+          const newSnowman = document.createElement('a-entity');
+          newSnowman.setAttribute('position', pos);
+          newSnowman.setAttribute('scale', '0.004 0.004 0.004'); // Matching your tree scale
           
-          // Set position and a visible scale
-          newEntity.setAttribute('position', position);
-          newEntity.setAttribute('scale', '0.004 0.004 0.004'); // Match your tree scale
+          // TRY TO LOAD YOUR MODEL
+          newSnowman.setAttribute('gltf-model', '#snowman-model');
           
-          // Add to the scene
-          this.el.sceneEl.appendChild(newEntity);
-          
-          // FALLBACK: If snowman is missing, also spawn a small white sphere
-          const ball = document.createElement('a-sphere');
-          ball.setAttribute('position', position);
-          ball.setAttribute('radius', '0.05');
-          ball.setAttribute('color', 'white');
-          this.el.sceneEl.appendChild(ball);
+          // ADD A FAIL-SAFE (In case the GLB doesn't show, this sphere will)
+          const sphere = document.createElement('a-sphere');
+          sphere.setAttribute('radius', '0.05');
+          sphere.setAttribute('color', 'white');
+          newSnowman.appendChild(sphere);
+
+          scene.appendChild(newSnowman);
         }
       });
     </script>
@@ -86,9 +81,7 @@
       </a-entity>
 
       <a-light type="directional" position="1 1 1" intensity="1.57" shadow-camera-automatic="#objects"></a-light>
-      <a-camera position="0 0.4 0" wasd-controls="acceleration:10;">
-        <a-cursor fuse="false" raycaster="objects: .none"></a-cursor>
-      </a-camera>
+      <a-camera position="0 0.4 0" wasd-controls="acceleration:10;"></a-camera>
       
       <a-plane follow-shadow="#objects" material="shader:shadow" shadow="cast:false;" rotation="-90 0 0" width="2" height="2"></a-plane>
       <a-sky color="#ECECEC" hide-on-enter-ar></a-sky>
