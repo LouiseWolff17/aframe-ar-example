@@ -20,41 +20,62 @@
 
       AFRAME.registerComponent('ar-handler', {
         init: function () {
-          // Listen for the 'select' event which is the official "screen tap" in AR
+          this.selectedEl = null; // Track what we are moving
+
           this.el.sceneEl.addEventListener('enter-vr', () => {
             if (this.el.sceneEl.is('ar-mode')) {
               this.el.sceneEl.xrSession.addEventListener('select', () => {
-                this.spawn();
+                this.handleTap();
               });
             }
           });
 
-          // Fallback for desktop testing (standard click)
+          // Desktop testing
           window.addEventListener('click', () => {
-            if (!this.el.sceneEl.is('ar-mode')) { this.spawn(); }
+            if (!this.el.sceneEl.is('ar-mode')) { this.handleTap(); }
           });
         },
 
-        spawn: function () {
-          const scene = this.el.sceneEl;
+        handleTap: function () {
           const reticle = document.querySelector('#objects');
-          const pos = reticle.getAttribute('position');
+          const newPos = reticle.getAttribute('position');
 
-          // Create a new entity for the snowman
+          if (this.selectedEl) {
+            // DROP MODE: If we are holding something, let go of it at the new position
+            this.selectedEl.setAttribute('position', {x: newPos.x, y: newPos.y, z: newPos.z});
+            this.selectedEl.setAttribute('material', 'opacity', '1.0'); // Make it solid again
+            this.selectedEl = null;
+          } else {
+            // SPAWN MODE: Create a new snowman
+            this.spawn(newPos);
+          }
+        },
+
+        spawn: function (pos) {
+          const scene = this.el.sceneEl;
           const newSnowman = document.createElement('a-entity');
-          newSnowman.setAttribute('position', pos);
-          newSnowman.setAttribute('scale', '0.2 0.2 0.2'); // Matching your tree scale
           
-          // TRY TO LOAD YOUR MODEL
+          newSnowman.setAttribute('position', {x: pos.x, y: pos.y, z: pos.z});
+          newSnowman.setAttribute('scale', '0.2 0.2 0.2'); 
           newSnowman.setAttribute('gltf-model', '#snowman-model');
           
-          // ADD A FAIL-SAFE (In case the GLB doesn't show, this sphere will)
-          const sphere = document.createElement('a-sphere');
-          sphere.setAttribute('radius', '0.05');
-          sphere.setAttribute('color', 'white');
-          newSnowman.appendChild(sphere);
+          // Add an event listener to the individual snowman so we can pick it up later
+          newSnowman.addEventListener('click', (evt) => {
+            this.selectedEl = newSnowman;
+            newSnowman.setAttribute('material', 'opacity', '0.5'); // Visual cue it's picked up
+            evt.stopPropagation(); // Prevent spawning a new one at the same time
+          });
 
           scene.appendChild(newSnowman);
+        },
+
+        tick: function () {
+          // If an item is selected, make it follow the reticle in real-time
+          if (this.selectedEl) {
+            const reticle = document.querySelector('#objects');
+            const targetPos = reticle.getAttribute('position');
+            this.selectedEl.setAttribute('position', {x: targetPos.x, y: targetPos.y, z: targetPos.z});
+          }
         }
       });
     </script>
