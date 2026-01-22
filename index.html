@@ -18,30 +18,48 @@
         }
       });
 
-      AFRAME.registerComponent('spawner', {
+      AFRAME.registerComponent('ar-spawner', {
         init: function () {
-          // This part detects the tap on the phone screen in AR
-          this.el.addEventListener('click', () => {
-            // 1. Create a new snowman entity
-            const newSnowman = document.createElement('a-entity');
-            
-            // 2. Set the model
-            newSnowman.setAttribute('gltf-model', '#snowman-model');
-            
-            // 3. Get the CURRENT position of the reticle (#objects)
-            // This is where the AR engine is currently pointing on your floor
-            const reticle = document.querySelector('#objects');
-            const targetPos = reticle.getAttribute('position');
-            
-            // 4. Set the new snowman's position to that exact spot
-            newSnowman.setAttribute('position', {x: targetPos.x, y: targetPos.y, z: targetPos.z});
-            
-            // 5. Set the scale (using 0.004 to match your tree)
-            newSnowman.setAttribute('scale', '0.004 0.004 0.004');
-            
-            // 6. Add it to the scene permanently
-            this.el.appendChild(newSnowman);
+          // Listen for the select event (screen tap) specifically in AR
+          this.el.sceneEl.addEventListener('enter-vr', () => {
+            if (this.el.sceneEl.is('ar-mode')) {
+              this.el.sceneEl.xrSession.addEventListener('select', (ev) => {
+                this.spawnEntity();
+              });
+            }
           });
+
+          // Also allow clicking on desktop for testing
+          window.addEventListener('click', () => {
+            if (!this.el.sceneEl.is('ar-mode')) {
+              this.spawnEntity();
+            }
+          });
+        },
+
+        spawnEntity: function () {
+          const newEntity = document.createElement('a-entity');
+          
+          // Try to use your snowman model
+          newEntity.setAttribute('gltf-model', '#snowman-model');
+          
+          // Get the position of the reticle (#objects)
+          const reticle = document.querySelector('#objects');
+          const position = reticle.getAttribute('position');
+          
+          // Set position and a visible scale
+          newEntity.setAttribute('position', position);
+          newEntity.setAttribute('scale', '0.004 0.004 0.004'); // Match your tree scale
+          
+          // Add to the scene
+          this.el.sceneEl.appendChild(newEntity);
+          
+          // FALLBACK: If snowman is missing, also spawn a small white sphere
+          const ball = document.createElement('a-sphere');
+          ball.setAttribute('position', position);
+          ball.setAttribute('radius', '0.05');
+          ball.setAttribute('color', 'white');
+          this.el.sceneEl.appendChild(ball);
         }
       });
     </script>
